@@ -12,4 +12,6 @@ Rails.application.routes.draw do
   delete '/logout',  to: 'sessions#destroy'
   # /users/1 のURLを有効にする
   resources :users
+# アカウント有効化に使うリソース（editアクション）を追加する
+  resources :account_activations, only: [:edit]
 end
