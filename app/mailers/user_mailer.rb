@@ -6,9 +6,11 @@ class UserMailer < ApplicationMailer
     mail to: user.email, subject: "Account activation"
   end
 
-  def password_reset
-    @greeting = "Hi"
-
-    mail to: "to@example.org"
+  # パスワード再設定のリンクをメール送信する
+  def password_reset(user)
+    # インスタンス変数を定義
+    @user = user
+    # user.emailにタイトルが"t('.password_reset')"のメールを送信
+    mail to: user.email, subject: "Password reset"
   end
 end
