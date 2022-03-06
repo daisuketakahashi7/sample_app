@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  # ユーザーがマイクロポストを複数所有する（has_many）関連付け
+  has_many :microposts, dependent: :destroy
   # :remember_token, :activation_token, :reset_tokenをUserクラスに定義
   attr_accessor :remember_token, :activation_token, :reset_token
   before_save   :downcase_email
@@ -67,18 +69,24 @@ class User < ApplicationRecord
     # パスワード再設定メールの送信時刻が、現在時刻より2時間以上前（早い）の場合
     reset_sent_at < 2.hours.ago
   end
+  
+  # 試作feedの定義
+  # 完全な実装は次章の「ユーザーをフォローする」を参照
+  def feed
+    Micropost.where("user_id = ?", id)
+  end
 
   private
+  
+  # メールアドレスをすべて小文字にする
+  def downcase_email
+    # self.email = email.downcase
+    email.downcase
+  end
 
-    # メールアドレスをすべて小文字にする
-    def downcase_email
-      # self.email = email.downcase
-      email.downcase
-    end
-
-    # 有効化トークンとダイジェストを作成および代入する
-    def create_activation_digest
-      self.activation_token  = User.new_token
-      self.activation_digest = User.digest(activation_token)
-    end
+  # 有効化トークンとダイジェストを作成および代入する
+  def create_activation_digest
+    self.activation_token  = User.new_token
+    self.activation_digest = User.digest(activation_token)
+  end
 end
