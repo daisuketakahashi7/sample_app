@@ -12,12 +12,20 @@ Rails.application.routes.draw do
   get    '/login',   to: 'sessions#new'
   post   '/login',   to: 'sessions#create'
   delete '/logout',  to: 'sessions#destroy'
-  # /users/1 のURLを有効にする
-  resources :users
+  # usersのブロック作成
+  resources :users do
+    # memberのブロック作成
+    member do
+      # followingとfollowersにgetのルーティング作成
+      get :following, :followers
+    end
+  end
   # アカウント有効化に使うリソース（editアクション）を追加する
   resources :account_activations, only: [:edit]
   # パスワード再設定用リソースを追加する
   resources :password_resets,     only: [:new, :create, :edit, :update]
   # マイクロポストリソースのルーティング（newやcreateなどは不要）
   resources :microposts,          only: [:create, :destroy]
+  # relationshipsのcreateとdestroyのルーティングを生成
+  resources :relationships,       only: [:create, :destroy]
 end
